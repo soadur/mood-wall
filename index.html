@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI心情粒子墙 - 小白也能做的高级网页</title>
+    <style>
+        /* 苹果官网同款极简风格 */
+        body {
+            margin: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* 毛玻璃输入框 */
+        .input-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        /* 苹果风格输入框 */
+        textarea {
+            width: 300px;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-size: 16px;
+            resize: none;
+        }
+
+        /* 发光按钮 */
+        button {
+            display: block;
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: linear-gradient(45deg, #007AFF, #00C7FF);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* 漂浮文字效果 */
+        .mood-text {
+            position: absolute;
+            color: #FFF;
+            font-size: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 输入区域 -->
+    <div class="input-container">
+        <textarea placeholder="写下你今天的心情..."></textarea>
+        <button onclick="submitMood()">提交心情</button>
+    </div>
+
+    <!-- 漂浮文字显示区 -->
+    <div id="mood-wall"></div>
+
+    <script>
+        // 提交后触发动画
+        function submitMood() {
+            const inputBox = document.querySelector('.input-container');
+            const text = document.querySelector('textarea').value;
+            
+            // 1. 输入框消失动画
+            inputBox.style.opacity = '0';
+            inputBox.style.pointerEvents = 'none';
+
+            // 2. 创建漂浮文字
+            createFloatingText(text);
+
+            // 3. 清空输入框
+            document.querySelector('textarea').value = '';
+        }
+
+        // 创建漂浮文字粒子
+        function createFloatingText(text) {
+            const element = document.createElement('div');
+            element.className = 'mood-text';
+            element.textContent = text;
+            document.getElementById('mood-wall').appendChild(element);
+
+            // 随机初始位置和速度
+            let x = Math.random() * window.innerWidth;
+            let y = Math.random() * window.innerHeight;
+            let dx = (Math.random() - 0.5) * 2;
+            let dy = (Math.random() - 0.5) * 2;
+
+            // 动画循环
+            function animate() {
+                x += dx;
+                y += dy;
+
+                // 边界反弹
+                if (x < 0 || x > window.innerWidth - 50) dx *= -1;
+                if (y < 0 || y > window.innerHeight - 50) dy *= -1;
+
+                element.style.left = x + 'px';
+                element.style.top = y + 'px';
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
